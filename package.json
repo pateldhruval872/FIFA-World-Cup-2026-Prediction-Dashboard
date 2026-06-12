@@ -1,0 +1,37 @@
+{
+  "name": "fifa-wc-2026-prediction-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FIFA World Cup 2026 Prediction Dashboard — calibrated, explainable match & tournament predictions.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push --skip-generate",
+    "seed:build": "python3 ml/ingest/build_seed.py",
+    "seed:db": "tsx prisma/seed.ts",
+    "setup": "npm run prisma:generate && npm run prisma:push && npm run seed:build && npm run seed:db",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.4.6",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.5"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_comment": "Confirmed 16 host venues for FIFA World Cup 2026. Keyed by the city string used in the international results dataset. Altitude in metres; lat/lng approximate stadium coordinates.",
+  "Mexico City": { "name": "Estadio Azteca", "country": "Mexico", "lat": 19.3029, "lng": -99.1505, "altitude": 2240, "capacity": 87523, "hasRoof": false, "surface": "grass" },
+  "Zapopan": { "name": "Estadio Akron", "country": "Mexico", "lat": 20.6819, "lng": -103.4626, "altitude": 1566, "capacity": 46232, "hasRoof": false, "surface": "grass" },
+  "Guadalupe": { "name": "Estadio BBVA", "country": "Mexico", "lat": 25.6694, "lng": -100.2444, "altitude": 540, "capacity": 53500, "hasRoof": false, "surface": "grass" },
+  "Toronto": { "name": "BMO Field", "country": "Canada", "lat": 43.6332, "lng": -79.4185, "altitude": 76, "capacity": 30000, "hasRoof": false, "surface": "grass" },
+  "Vancouver": { "name": "BC Place", "country": "Canada", "lat": 49.2768, "lng": -123.1119, "altitude": 3, "capacity": 54500, "hasRoof": true, "surface": "turf" },
+  "Atlanta": { "name": "Mercedes-Benz Stadium", "country": "United States", "lat": 33.7554, "lng": -84.4008, "altitude": 320, "capacity": 71000, "hasRoof": true, "surface": "turf" },
+  "Foxborough": { "name": "Gillette Stadium", "country": "United States", "lat": 42.0909, "lng": -71.2643, "altitude": 30, "capacity": 65878, "hasRoof": false, "surface": "turf" },
+  "Arlington": { "name": "AT&T Stadium", "country": "United States", "lat": 32.7473, "lng": -97.0945, "altitude": 180, "capacity": 80000, "hasRoof": true, "surface": "turf" },
+  "Houston": { "name": "NRG Stadium", "country": "United States", "lat": 29.6847, "lng": -95.4107, "altitude": 15, "capacity": 72220, "hasRoof": true, "surface": "grass" },
+  "Kansas City": { "name": "Arrowhead Stadium", "country": "United States", "lat": 39.0489, "lng": -94.4839, "altitude": 270, "capacity": 76416, "hasRoof": false, "surface": "grass" },
+  "Inglewood": { "name": "SoFi Stadium", "country": "United States", "lat": 33.9535, "lng": -118.3392, "altitude": 30, "capacity": 70240, "hasRoof": true, "surface": "turf" },
+  "Miami Gardens": { "name": "Hard Rock Stadium", "country": "United States", "lat": 25.9580, "lng": -80.2389, "altitude": 3, "capacity": 64767, "hasRoof": false, "surface": "grass" },
+  "East Rutherford": { "name": "MetLife Stadium", "country": "United States", "lat": 40.8135, "lng": -74.0745, "altitude": 5, "capacity": 82500, "hasRoof": false, "surface": "turf" },
+  "Philadelphia": { "name": "Lincoln Financial Field", "country": "United States", "lat": 39.9008, "lng": -75.1675, "altitude": 10, "capacity": 69596, "hasRoof": false, "surface": "grass" },
+  "Santa Clara": { "name": "Levi's Stadium", "country": "United States", "lat": 37.4030, "lng": -121.9700, "altitude": 9, "capacity": 68500, "hasRoof": false, "surface": "grass" },
+  "Seattle": { "name": "Lumen Field", "country": "United States", "lat": 47.5952, "lng": -122.3316, "altitude": 5, "capacity": 69000, "hasRoof": false, "surface": "turf" }
+}

@@ -1,0 +1,228 @@
+// FIFA World Cup 2026 Prediction Dashboard — data model.
+//
+// Runs on SQLite for a zero-infrastructure local MVP. To move to PostgreSQL
+// (the production recommendation), change `provider` to "postgresql" and set
+// DATABASE_URL accordingly — the schema is written to be portable (Json fields
+// map to JSONB on Postgres).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Tournament {
+  id            String   @id @default(cuid())
+  name          String
+  year          Int
+  hostCountries String // comma-separated ISO names
+  format        String
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  groups  Group[]
+  teams   Team[]
+  matches Match[]
+  squads  SquadEntry[]
+}
+
+model Group {
+  id           String     @id @default(cuid())
+  label        String // A..L
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  teams        Team[]
+  matches      Match[]
+
+  @@unique([tournamentId, label])
+}
+
+model Team {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  fifaCode      String? // 3-letter code where known
+  confederation String? // UEFA, CONMEBOL, CONCACAF, CAF, AFC, OFC
+  isHost        Boolean  @default(false)
+  homeLat       Float? // capital/home base for travel/altitude baselines
+  homeLng       Float?
+  homeAltitude  Float?
+  tournamentId  String?
+  tournament    Tournament? @relation(fields: [tournamentId], references: [id])
+  groupId       String?
+  group         Group?      @relation(fields: [groupId], references: [id])
+
+  homeMatches  Match[]      @relation("HomeTeam")
+  awayMatches  Match[]      @relation("AwayTeam")
+  rankings     Ranking[]
+  forms        TeamForm[]
+  squadEntries SquadEntry[]
+  players      Player[]
+}
+
+model Venue {
+  id        String  @id @default(cuid())
+  name      String
+  city      String
+  country   String
+  lat       Float
+  lng       Float
+  altitude  Float // metres above sea level
+  capacity  Int?
+  hasRoof   Boolean @default(false)
+  surface   String?
+  matches   Match[]
+
+  @@unique([city, country])
+}
+
+model Player {
+  id               String        @id @default(cuid())
+  name             String
+  position         String?
+  club             String?
+  dob              DateTime?
+  nationalTeamId   String?
+  nationalTeam     Team?         @relation(fields: [nationalTeamId], references: [id])
+  squadEntries     SquadEntry[]
+  metrics          PlayerMetric[]
+}
+
+model SquadEntry {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  teamId       String
+  team         Team       @relation(fields: [teamId], references: [id])
+  playerId     String
+  player       Player     @relation(fields: [playerId], references: [id])
+  shirtNo      Int?
+  role         String? // GK/DEF/MID/FWD
+  isAvailable  Boolean    @default(true)
+
+  @@unique([tournamentId, playerId])
+}
+
+model Match {
+  id           String      @id @default(cuid())
+  tournamentId String
+  tournament   Tournament  @relation(fields: [tournamentId], references: [id])
+  stage        String // GROUP, R32, R16, QF, SF, THIRD, FINAL
+  matchNo      Int?
+  groupId      String?
+  group        Group?      @relation(fields: [groupId], references: [id])
+  homeTeamId   String?
+  homeTeam     Team?       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId   String?
+  awayTeam     Team?       @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  venueId      String
+  venue        Venue       @relation(fields: [venueId], references: [id])
+  kickoff      DateTime
+  status       String      @default("SCHEDULED") // SCHEDULED, PLAYED
+  homeScore    Int?
+  awayScore    Int?
+  neutral      Boolean     @default(true)
+
+  predictions  Prediction[]
+
+  @@index([stage])
+  @@index([kickoff])
+}
+
+model Ranking {
+  id        String   @id @default(cuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  date      DateTime
+  elo       Float?
+  fifaRank  Int?
+  fifaPoints Float?
+  source    String?
+
+  @@index([teamId, date])
+}
+
+model TeamForm {
+  id              String   @id @default(cuid())
+  teamId          String
+  team            Team     @relation(fields: [teamId], references: [id])
+  asOfDate        DateTime
+  last5Points     Int?
+  goalsForAvg     Float?
+  goalsAgainstAvg Float?
+  attackStrength  Float?
+  defenseStrength Float?
+
+  @@index([teamId, asOfDate])
+}
+
+model PlayerMetric {
+  id         String   @id @default(cuid())
+  playerId   String
+  player     Player   @relation(fields: [playerId], references: [id])
+  date       DateTime
+  metricType String
+  value      Float
+  source     String?
+
+  @@index([playerId, date])
+}
+
+model ModelVersion {
+  id           String       @id @default(cuid())
+  version      String       @unique
+  algorithm    String
+  trainedAt    DateTime     @default(now())
+  trainDataHash String?
+  metrics      String? // JSON: { logloss, brier, rps, accuracy, baselineLogloss }
+  artifactUri  String?
+  isActive     Boolean      @default(false)
+  predictions  Prediction[]
+  simulations  SimulationRun[]
+}
+
+model Prediction {
+  id             String       @id @default(cuid())
+  matchId        String
+  match          Match        @relation(fields: [matchId], references: [id])
+  modelVersionId String
+  modelVersion   ModelVersion @relation(fields: [modelVersionId], references: [id])
+  pHome          Float
+  pDraw          Float
+  pAway          Float
+  expGoalsHome   Float
+  expGoalsAway   Float
+  scorelineDist  String // JSON: [{ score: "2-1", p: 0.18 }, ...]
+  featuresSnapshot String // JSON
+  keyFactors     String // JSON: [{ factor, impact, direction }]
+  confidence     Float
+  generatedAt    DateTime     @default(now())
+
+  @@unique([matchId, modelVersionId])
+}
+
+model SimulationRun {
+  id             String       @id @default(cuid())
+  modelVersionId String
+  modelVersion   ModelVersion @relation(fields: [modelVersionId], references: [id])
+  seed           Int
+  iterations     Int
+  scope          String // GROUP, KNOCKOUT, FULL
+  results        String // JSON
+  runAt          DateTime     @default(now())
+}
+
+model DataSourceLog {
+  id           String   @id @default(cuid())
+  source       String
+  runAt        DateTime @default(now())
+  status       String
+  rowsIngested Int      @default(0)
+  rowsRejected Int      @default(0)
+  error        String?
+  dataHash     String?
+}

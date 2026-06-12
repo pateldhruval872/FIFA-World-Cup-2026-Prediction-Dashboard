@@ -1,0 +1,32 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# production
+/build
+
+# database (generated locally; rebuild via npm run setup)
+*.db
+*.db-journal
+prisma/dev.db
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# misc
+.DS_Store
+*.log
+.env.local
+
+# raw data (large; refetched by pipeline). Keep .gitkeep.
+/data/raw/*.csv

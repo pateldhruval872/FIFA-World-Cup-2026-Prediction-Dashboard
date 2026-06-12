@@ -1,0 +1,178 @@
+[
+  {
+    "city": "Mexico City",
+    "name": "Estadio Azteca",
+    "country": "Mexico",
+    "lat": 19.3029,
+    "lng": -99.1505,
+    "altitude": 2240,
+    "capacity": 87523,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Zapopan",
+    "name": "Estadio Akron",
+    "country": "Mexico",
+    "lat": 20.6819,
+    "lng": -103.4626,
+    "altitude": 1566,
+    "capacity": 46232,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Guadalupe",
+    "name": "Estadio BBVA",
+    "country": "Mexico",
+    "lat": 25.6694,
+    "lng": -100.2444,
+    "altitude": 540,
+    "capacity": 53500,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Toronto",
+    "name": "BMO Field",
+    "country": "Canada",
+    "lat": 43.6332,
+    "lng": -79.4185,
+    "altitude": 76,
+    "capacity": 30000,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Vancouver",
+    "name": "BC Place",
+    "country": "Canada",
+    "lat": 49.2768,
+    "lng": -123.1119,
+    "altitude": 3,
+    "capacity": 54500,
+    "hasRoof": true,
+    "surface": "turf"
+  },
+  {
+    "city": "Atlanta",
+    "name": "Mercedes-Benz Stadium",
+    "country": "United States",
+    "lat": 33.7554,
+    "lng": -84.4008,
+    "altitude": 320,
+    "capacity": 71000,
+    "hasRoof": true,
+    "surface": "turf"
+  },
+  {
+    "city": "Foxborough",
+    "name": "Gillette Stadium",
+    "country": "United States",
+    "lat": 42.0909,
+    "lng": -71.2643,
+    "altitude": 30,
+    "capacity": 65878,
+    "hasRoof": false,
+    "surface": "turf"
+  },
+  {
+    "city": "Arlington",
+    "name": "AT&T Stadium",
+    "country": "United States",
+    "lat": 32.7473,
+    "lng": -97.0945,
+    "altitude": 180,
+    "capacity": 80000,
+    "hasRoof": true,
+    "surface": "turf"
+  },
+  {
+    "city": "Houston",
+    "name": "NRG Stadium",
+    "country": "United States",
+    "lat": 29.6847,
+    "lng": -95.4107,
+    "altitude": 15,
+    "capacity": 72220,
+    "hasRoof": true,
+    "surface": "grass"
+  },
+  {
+    "city": "Kansas City",
+    "name": "Arrowhead Stadium",
+    "country": "United States",
+    "lat": 39.0489,
+    "lng": -94.4839,
+    "altitude": 270,
+    "capacity": 76416,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Inglewood",
+    "name": "SoFi Stadium",
+    "country": "United States",
+    "lat": 33.9535,
+    "lng": -118.3392,
+    "altitude": 30,
+    "capacity": 70240,
+    "hasRoof": true,
+    "surface": "turf"
+  },
+  {
+    "city": "Miami Gardens",
+    "name": "Hard Rock Stadium",
+    "country": "United States",
+    "lat": 25.958,
+    "lng": -80.2389,
+    "altitude": 3,
+    "capacity": 64767,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "East Rutherford",
+    "name": "MetLife Stadium",
+    "country": "United States",
+    "lat": 40.8135,
+    "lng": -74.0745,
+    "altitude": 5,
+    "capacity": 82500,
+    "hasRoof": false,
+    "surface": "turf"
+  },
+  {
+    "city": "Philadelphia",
+    "name": "Lincoln Financial Field",
+    "country": "United States",
+    "lat": 39.9008,
+    "lng": -75.1675,
+    "altitude": 10,
+    "capacity": 69596,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Santa Clara",
+    "name": "Levi's Stadium",
+    "country": "United States",
+    "lat": 37.403,
+    "lng": -121.97,
+    "altitude": 9,
+    "capacity": 68500,
+    "hasRoof": false,
+    "surface": "grass"
+  },
+  {
+    "city": "Seattle",
+    "name": "Lumen Field",
+    "country": "United States",
+    "lat": 47.5952,
+    "lng": -122.3316,
+    "altitude": 5,
+    "capacity": 69000,
+    "hasRoof": false,
+    "surface": "turf"
+  }
+]

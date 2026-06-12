@@ -1,0 +1,110 @@
+[
+  {
+    "label": "A",
+    "teams": [
+      "Czech Republic",
+      "Mexico",
+      "South Africa",
+      "South Korea"
+    ]
+  },
+  {
+    "label": "B",
+    "teams": [
+      "Bosnia and Herzegovina",
+      "Canada",
+      "Qatar",
+      "Switzerland"
+    ]
+  },
+  {
+    "label": "C",
+    "teams": [
+      "Australia",
+      "Paraguay",
+      "Turkey",
+      "United States"
+    ]
+  },
+  {
+    "label": "D",
+    "teams": [
+      "Brazil",
+      "Haiti",
+      "Morocco",
+      "Scotland"
+    ]
+  },
+  {
+    "label": "E",
+    "teams": [
+      "Curaçao",
+      "Ecuador",
+      "Germany",
+      "Ivory Coast"
+    ]
+  },
+  {
+    "label": "F",
+    "teams": [
+      "Japan",
+      "Netherlands",
+      "Sweden",
+      "Tunisia"
+    ]
+  },
+  {
+    "label": "G",
+    "teams": [
+      "Belgium",
+      "Egypt",
+      "Iran",
+      "New Zealand"
+    ]
+  },
+  {
+    "label": "H",
+    "teams": [
+      "Cape Verde",
+      "Saudi Arabia",
+      "Spain",
+      "Uruguay"
+    ]
+  },
+  {
+    "label": "I",
+    "teams": [
+      "France",
+      "Iraq",
+      "Norway",
+      "Senegal"
+    ]
+  },
+  {
+    "label": "J",
+    "teams": [
+      "Algeria",
+      "Argentina",
+      "Austria",
+      "Jordan"
+    ]
+  },
+  {
+    "label": "K",
+    "teams": [
+      "Colombia",
+      "DR Congo",
+      "Portugal",
+      "Uzbekistan"
+    ]
+  },
+  {
+    "label": "L",
+    "teams": [
+      "Croatia",
+      "England",
+      "Ghana",
+      "Panama"
+    ]
+  }
+]

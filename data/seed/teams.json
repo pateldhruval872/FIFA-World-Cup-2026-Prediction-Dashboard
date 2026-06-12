@@ -1,0 +1,482 @@
+[
+  {
+    "name": "Algeria",
+    "fifaCode": "ALG",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 36.75,
+    "homeLng": 3.06,
+    "homeAltitude": 24,
+    "group": "J"
+  },
+  {
+    "name": "Argentina",
+    "fifaCode": "ARG",
+    "confederation": "CONMEBOL",
+    "isHost": false,
+    "homeLat": -34.6,
+    "homeLng": -58.38,
+    "homeAltitude": 25,
+    "group": "J"
+  },
+  {
+    "name": "Australia",
+    "fifaCode": "AUS",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": -35.28,
+    "homeLng": 149.13,
+    "homeAltitude": 577,
+    "group": "C"
+  },
+  {
+    "name": "Austria",
+    "fifaCode": "AUT",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 48.21,
+    "homeLng": 16.37,
+    "homeAltitude": 188,
+    "group": "J"
+  },
+  {
+    "name": "Belgium",
+    "fifaCode": "BEL",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 50.85,
+    "homeLng": 4.35,
+    "homeAltitude": 13,
+    "group": "G"
+  },
+  {
+    "name": "Bosnia and Herzegovina",
+    "fifaCode": "BIH",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 43.86,
+    "homeLng": 18.41,
+    "homeAltitude": 518,
+    "group": "B"
+  },
+  {
+    "name": "Brazil",
+    "fifaCode": "BRA",
+    "confederation": "CONMEBOL",
+    "isHost": false,
+    "homeLat": -15.79,
+    "homeLng": -47.88,
+    "homeAltitude": 1172,
+    "group": "D"
+  },
+  {
+    "name": "Canada",
+    "fifaCode": "CAN",
+    "confederation": "CONCACAF",
+    "isHost": true,
+    "homeLat": 45.42,
+    "homeLng": -75.7,
+    "homeAltitude": 70,
+    "group": "B"
+  },
+  {
+    "name": "Cape Verde",
+    "fifaCode": "CPV",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 14.93,
+    "homeLng": -23.51,
+    "homeAltitude": 30,
+    "group": "H"
+  },
+  {
+    "name": "Colombia",
+    "fifaCode": "COL",
+    "confederation": "CONMEBOL",
+    "isHost": false,
+    "homeLat": 4.71,
+    "homeLng": -74.07,
+    "homeAltitude": 2640,
+    "group": "K"
+  },
+  {
+    "name": "Croatia",
+    "fifaCode": "CRO",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 45.81,
+    "homeLng": 15.98,
+    "homeAltitude": 158,
+    "group": "L"
+  },
+  {
+    "name": "Curaçao",
+    "fifaCode": "CUW",
+    "confederation": "CONCACAF",
+    "isHost": false,
+    "homeLat": 12.11,
+    "homeLng": -68.93,
+    "homeAltitude": 5,
+    "group": "E"
+  },
+  {
+    "name": "Czech Republic",
+    "fifaCode": "CZE",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 50.08,
+    "homeLng": 14.44,
+    "homeAltitude": 200,
+    "group": "A"
+  },
+  {
+    "name": "DR Congo",
+    "fifaCode": "COD",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": -4.32,
+    "homeLng": 15.31,
+    "homeAltitude": 240,
+    "group": "K"
+  },
+  {
+    "name": "Ecuador",
+    "fifaCode": "ECU",
+    "confederation": "CONMEBOL",
+    "isHost": false,
+    "homeLat": -0.18,
+    "homeLng": -78.47,
+    "homeAltitude": 2850,
+    "group": "E"
+  },
+  {
+    "name": "Egypt",
+    "fifaCode": "EGY",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 30.04,
+    "homeLng": 31.24,
+    "homeAltitude": 23,
+    "group": "G"
+  },
+  {
+    "name": "England",
+    "fifaCode": "ENG",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 51.51,
+    "homeLng": -0.13,
+    "homeAltitude": 11,
+    "group": "L"
+  },
+  {
+    "name": "France",
+    "fifaCode": "FRA",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 48.86,
+    "homeLng": 2.35,
+    "homeAltitude": 35,
+    "group": "I"
+  },
+  {
+    "name": "Germany",
+    "fifaCode": "GER",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 52.52,
+    "homeLng": 13.4,
+    "homeAltitude": 34,
+    "group": "E"
+  },
+  {
+    "name": "Ghana",
+    "fifaCode": "GHA",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 5.6,
+    "homeLng": -0.19,
+    "homeAltitude": 61,
+    "group": "L"
+  },
+  {
+    "name": "Haiti",
+    "fifaCode": "HAI",
+    "confederation": "CONCACAF",
+    "isHost": false,
+    "homeLat": 18.59,
+    "homeLng": -72.31,
+    "homeAltitude": 98,
+    "group": "D"
+  },
+  {
+    "name": "Iran",
+    "fifaCode": "IRN",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 35.69,
+    "homeLng": 51.39,
+    "homeAltitude": 1200,
+    "group": "G"
+  },
+  {
+    "name": "Iraq",
+    "fifaCode": "IRQ",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 33.31,
+    "homeLng": 44.36,
+    "homeAltitude": 34,
+    "group": "I"
+  },
+  {
+    "name": "Ivory Coast",
+    "fifaCode": "CIV",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 6.85,
+    "homeLng": -5.31,
+    "homeAltitude": 247,
+    "group": "E"
+  },
+  {
+    "name": "Japan",
+    "fifaCode": "JPN",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 35.68,
+    "homeLng": 139.69,
+    "homeAltitude": 40,
+    "group": "F"
+  },
+  {
+    "name": "Jordan",
+    "fifaCode": "JOR",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 31.95,
+    "homeLng": 35.93,
+    "homeAltitude": 757,
+    "group": "J"
+  },
+  {
+    "name": "Mexico",
+    "fifaCode": "MEX",
+    "confederation": "CONCACAF",
+    "isHost": true,
+    "homeLat": 19.43,
+    "homeLng": -99.13,
+    "homeAltitude": 2240,
+    "group": "A"
+  },
+  {
+    "name": "Morocco",
+    "fifaCode": "MAR",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 34.02,
+    "homeLng": -6.84,
+    "homeAltitude": 75,
+    "group": "D"
+  },
+  {
+    "name": "Netherlands",
+    "fifaCode": "NED",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 52.37,
+    "homeLng": 4.9,
+    "homeAltitude": 2,
+    "group": "F"
+  },
+  {
+    "name": "New Zealand",
+    "fifaCode": "NZL",
+    "confederation": "OFC",
+    "isHost": false,
+    "homeLat": -41.29,
+    "homeLng": 174.78,
+    "homeAltitude": 13,
+    "group": "G"
+  },
+  {
+    "name": "Norway",
+    "fifaCode": "NOR",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 59.91,
+    "homeLng": 10.75,
+    "homeAltitude": 23,
+    "group": "I"
+  },
+  {
+    "name": "Panama",
+    "fifaCode": "PAN",
+    "confederation": "CONCACAF",
+    "isHost": false,
+    "homeLat": 8.98,
+    "homeLng": -79.52,
+    "homeAltitude": 2,
+    "group": "L"
+  },
+  {
+    "name": "Paraguay",
+    "fifaCode": "PAR",
+    "confederation": "CONMEBOL",
+    "isHost": false,
+    "homeLat": -25.3,
+    "homeLng": -57.64,
+    "homeAltitude": 43,
+    "group": "C"
+  },
+  {
+    "name": "Portugal",
+    "fifaCode": "POR",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 38.72,
+    "homeLng": -9.13,
+    "homeAltitude": 2,
+    "group": "K"
+  },
+  {
+    "name": "Qatar",
+    "fifaCode": "QAT",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 25.29,
+    "homeLng": 51.53,
+    "homeAltitude": 10,
+    "group": "B"
+  },
+  {
+    "name": "Saudi Arabia",
+    "fifaCode": "KSA",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 24.71,
+    "homeLng": 46.68,
+    "homeAltitude": 612,
+    "group": "H"
+  },
+  {
+    "name": "Scotland",
+    "fifaCode": "SCO",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 55.95,
+    "homeLng": -3.19,
+    "homeAltitude": 47,
+    "group": "D"
+  },
+  {
+    "name": "Senegal",
+    "fifaCode": "SEN",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 14.72,
+    "homeLng": -17.47,
+    "homeAltitude": 22,
+    "group": "I"
+  },
+  {
+    "name": "South Africa",
+    "fifaCode": "RSA",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": -25.75,
+    "homeLng": 28.19,
+    "homeAltitude": 1339,
+    "group": "A"
+  },
+  {
+    "name": "South Korea",
+    "fifaCode": "KOR",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 37.57,
+    "homeLng": 126.98,
+    "homeAltitude": 38,
+    "group": "A"
+  },
+  {
+    "name": "Spain",
+    "fifaCode": "ESP",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 40.42,
+    "homeLng": -3.7,
+    "homeAltitude": 667,
+    "group": "H"
+  },
+  {
+    "name": "Sweden",
+    "fifaCode": "SWE",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 59.33,
+    "homeLng": 18.07,
+    "homeAltitude": 28,
+    "group": "F"
+  },
+  {
+    "name": "Switzerland",
+    "fifaCode": "SUI",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 46.95,
+    "homeLng": 7.45,
+    "homeAltitude": 540,
+    "group": "B"
+  },
+  {
+    "name": "Tunisia",
+    "fifaCode": "TUN",
+    "confederation": "CAF",
+    "isHost": false,
+    "homeLat": 36.81,
+    "homeLng": 10.18,
+    "homeAltitude": 4,
+    "group": "F"
+  },
+  {
+    "name": "Turkey",
+    "fifaCode": "TUR",
+    "confederation": "UEFA",
+    "isHost": false,
+    "homeLat": 39.93,
+    "homeLng": 32.86,
+    "homeAltitude": 938,
+    "group": "C"
+  },
+  {
+    "name": "United States",
+    "fifaCode": "USA",
+    "confederation": "CONCACAF",
+    "isHost": true,
+    "homeLat": 38.9,
+    "homeLng": -77.04,
+    "homeAltitude": 0,
+    "group": "C"
+  },
+  {
+    "name": "Uruguay",
+    "fifaCode": "URU",
+    "confederation": "CONMEBOL",
+    "isHost": false,
+    "homeLat": -34.9,
+    "homeLng": -56.16,
+    "homeAltitude": 43,
+    "group": "H"
+  },
+  {
+    "name": "Uzbekistan",
+    "fifaCode": "UZB",
+    "confederation": "AFC",
+    "isHost": false,
+    "homeLat": 41.3,
+    "homeLng": 69.24,
+    "homeAltitude": 455,
+    "group": "K"
+  }
+]

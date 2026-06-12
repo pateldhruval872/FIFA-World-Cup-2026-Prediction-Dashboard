@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { getFixturesWithPredictions, getTournament, getActiveModel } from "@/lib/queries";
+import { getFixturesWithPredictions, getTournament, getActiveModel, getSimulation } from "@/lib/queries";
 import { MatchCard } from "@/components/MatchCard";
-import { pct, dateLabel } from "@/lib/format";
-import type { ModelMetrics } from "@/lib/types";
+import { pct } from "@/lib/format";
+import type { ModelMetrics, SimulationResults } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -14,21 +14,22 @@ function pickPrediction<P extends { modelVersionId: string }>(
 }
 
 export default async function HomePage() {
-  const [tournament, model, matches, topTeams] = await Promise.all([
+  const [tournament, model, matches, allTeams, sim] = await Promise.all([
     getTournament(),
     getActiveModel(),
     getFixturesWithPredictions("GROUP"),
-    prisma.team.findMany({
-      include: { rankings: { orderBy: { date: "desc" }, take: 1 }, group: true },
-    }),
+    prisma.team.findMany({ select: { id: true, name: true } }),
+    getSimulation("FULL"),
   ]);
 
   const metrics: ModelMetrics | null = model?.metrics ? JSON.parse(model.metrics) : null;
+  const teamIds: Record<string, string> = Object.fromEntries(allTeams.map((t) => [t.name, t.id]));
 
-  const contenders = topTeams
-    .map((t) => ({ ...t, elo: t.rankings[0]?.elo ?? 0 }))
-    .sort((a, b) => b.elo - a.elo)
-    .slice(0, 8);
+  // Top contenders by simulated title odds (the headline number).
+  const results: SimulationResults | null = sim ? JSON.parse(sim.results) : null;
+  const contenders = (results?.teams ?? [])
+    .slice(0, 8)
+    .map((t) => ({ id: teamIds[t.team], name: t.team, pChampion: t.pChampion }));
 
   const withPred = matches
     .map((m) => ({ m, p: pickPrediction(m, model?.id) }))
@@ -72,18 +73,25 @@ export default async function HomePage() {
 
         <div className="space-y-6">
           <div className="card p-4">
-            <h2 className="mb-3 text-lg font-semibold">Top contenders</h2>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Title favourites</h2>
+              <Link href="/knockout" className="text-xs text-pitch-700 hover:underline">all →</Link>
+            </div>
             <ol className="space-y-1.5 text-sm">
               {contenders.map((t, i) => (
-                <li key={t.id} className="flex items-center justify-between">
-                  <Link href={`/teams/${t.id}`} className="hover:underline">
-                    <span className="mr-2 text-ink-400">{i + 1}.</span>{t.name}
-                  </Link>
-                  <span className="tabular-nums text-ink-600">{Math.round(t.elo)}</span>
+                <li key={t.name} className="flex items-center justify-between">
+                  {t.id ? (
+                    <Link href={`/teams/${t.id}`} className="hover:underline">
+                      <span className="mr-2 text-ink-400">{i + 1}.</span>{t.name}
+                    </Link>
+                  ) : (
+                    <span><span className="mr-2 text-ink-400">{i + 1}.</span>{t.name}</span>
+                  )}
+                  <span className="font-medium tabular-nums text-ink-700">{pct(t.pChampion, 1)}</span>
                 </li>
               ))}
             </ol>
-            <p className="mt-2 text-[11px] text-ink-400">Ranked by computed Elo rating.</p>
+            <p className="mt-2 text-[11px] text-ink-400">Simulated probability of winning the tournament.</p>
           </div>
 
           <div className="card p-4">

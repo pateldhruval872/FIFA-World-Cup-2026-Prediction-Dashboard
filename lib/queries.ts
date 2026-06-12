@@ -75,6 +75,14 @@ export async function getGroups() {
   });
 }
 
+export async function getSimulation(scope = "FULL") {
+  return prisma.simulationRun.findFirst({
+    where: { scope },
+    orderBy: { runAt: "desc" },
+    include: { modelVersion: true },
+  });
+}
+
 export async function getDataFreshness() {
   const log = await prisma.dataSourceLog.findFirst({ orderBy: { runAt: "desc" } });
   const model = await getActiveModel();

@@ -27,4 +27,7 @@ npx tsx prisma/seed.ts
 echo "[setup] train model + predictions…"
 python3 ml/predict.py
 
+echo "[setup] run tournament simulation…"
+python3 ml/simulate.py
+
 echo "[setup] done."

@@ -31,8 +31,9 @@ infrastructure** (SQLite + a fetched open dataset).
    At a neutral venue two equal teams get identical rates (symmetric by design).
 3. **Scoreline matrix** — independent Poisson over both rates yields W/D/L
    probabilities and the likeliest scorelines.
-4. **Group simulator** — 5,000 seeded Monte Carlo runs per group produce
-   qualification probabilities and projected standings.
+4. **Tournament simulator** — 20,000 seeded full-tournament Monte Carlo runs
+   (group stage → best-thirds → 32-team bracket → final) produce qualification
+   probabilities, round-by-round advancement, and **champion odds**.
 
 The model is published only if it **beats a no-skill baseline** on a strict
 temporal backtest (log-loss). Current backtest (≈6,800 post-2018 matches):
@@ -58,8 +59,9 @@ npm run prisma:generate
 npm run prisma:push          # creates prisma/dev.db
 npm run seed:db              # loads teams/groups/venues/fixtures
 
-# 4. Train the model + write predictions
+# 4. Train the model, write predictions, run the tournament simulation
 python3 ml/predict.py
+python3 ml/simulate.py
 
 # 5. Run it
 npm run dev                  # http://localhost:3000
@@ -118,11 +120,12 @@ instead of `sqlite3`. The schema's `Json`-style columns map cleanly to JSONB.
 ## Roadmap
 
 Implemented: **Phase 1** (data model + dashboard) · **Phase 2** (ingestion) ·
-**Phase 3** (baseline model) · partial **Phase 4/5** (match UI + group sim).
+**Phase 3** (baseline model) · **Phase 4** (match prediction UI) · **Phase 5**
+(group + knockout simulation, champion odds).
 
-Next: knockout Monte Carlo, player/squad & injury signals, travel/altitude
-features in the model, probability calibration + SHAP explainability, and
-production hardening (auth, monitoring, scheduled refresh).
+Next: player/squad & injury signals, travel/altitude features in the model,
+probability calibration + SHAP explainability (Phase 7), and production
+hardening — auth, monitoring, scheduled refresh (Phase 8).
 
 ## Limitations
 

@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { pct } from "@/lib/format";
-import type { StandingRow } from "@/lib/simulate";
+
+export type GroupRow = {
+  team: string;
+  expPoints: number;
+  expGoalDiff: number;
+  pTop2: number;
+};
 
 type Props = {
   label: string;
-  rows: StandingRow[];
+  rows: GroupRow[];
   teamIds: Record<string, string>;
 };
 
@@ -44,7 +50,7 @@ export function GroupTable({ label, rows, teamIds }: Props) {
         </tbody>
       </table>
       <div className="border-t border-ink-100 px-4 py-1.5 text-[11px] text-ink-400">
-        Top 2 (shaded) advance directly. Best-third qualification not modelled here.
+        Top 2 (shaded) advance directly; best-third spots add 8 more to the knockout.
       </div>
     </div>
   );

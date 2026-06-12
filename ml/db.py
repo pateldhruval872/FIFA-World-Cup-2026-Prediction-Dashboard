@@ -109,3 +109,41 @@ def fetch_group_matches(conn):
 
 def team_id_by_name(conn):
     return {r["name"]: r["id"] for r in conn.execute("SELECT id, name FROM Team")}
+
+
+def fetch_active_model(conn):
+    return conn.execute(
+        "SELECT id, version, metrics FROM ModelVersion WHERE isActive = 1 LIMIT 1"
+    ).fetchone()
+
+
+def fetch_team_elo(conn):
+    """Latest Elo per team name (from the Ranking time series)."""
+    rows = conn.execute(
+        "SELECT t.name AS name, r.elo AS elo FROM Team t "
+        "JOIN Ranking r ON r.teamId = t.id "
+        "WHERE r.id IN (SELECT id FROM Ranking r2 WHERE r2.teamId = t.id "
+        "ORDER BY r2.date DESC LIMIT 1)"
+    ).fetchall()
+    return {r["name"]: r["elo"] for r in rows}
+
+
+def fetch_groups(conn):
+    """{ 'A': ['Mexico', ...], ... } in group order."""
+    rows = conn.execute(
+        "SELECT g.label AS label, t.name AS team FROM \"Group\" g "
+        "JOIN Team t ON t.groupId = g.id ORDER BY g.label, t.name"
+    ).fetchall()
+    out: dict[str, list[str]] = {}
+    for r in rows:
+        out.setdefault(r["label"], []).append(r["team"])
+    return out
+
+
+def replace_simulation_run(conn, model_version_id, seed, iterations, scope, results_json):
+    conn.execute("DELETE FROM SimulationRun WHERE scope = ?", (scope,))
+    conn.execute(
+        "INSERT INTO SimulationRun (id, modelVersionId, seed, iterations, scope, "
+        "results, runAt) VALUES (?,?,?,?,?,?,?)",
+        (gen_id(), model_version_id, seed, iterations, scope, results_json, now_iso()),
+    )

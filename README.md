@@ -133,12 +133,31 @@ Future work: ingest official 26-man squads when released, geocode historical
 venues to train travel/rest/altitude as first-class features, add SHAP for
 richer models, and wire scheduled refresh.
 
+## Tournament-aware updates
+
+As World Cup matches are played, the dashboard ingests the real scores, marks
+those fixtures as played, and the simulator then uses the actual results for
+completed games while only projecting the matches that remain.
+
+```bash
+# refresh the dataset, ingest played results, retrain, re-simulate
+curl -sSf https://raw.githubusercontent.com/martj42/international_results/master/results.csv \
+  -o data/raw/results.csv
+python3 ml/ingest/match_results.py   # mark played group matches with real scores
+python3 ml/predict.py                # recompute Elo/form + predictions
+python3 ml/simulate.py               # standings/champion odds use real + projected
+```
+
+The **All Matches** page (`/matches`) lists every fixture by date with
+predictions, filterable by stage; played games show the final score.
+
 ## Admin console
 
 `/admin` (cookie-token auth, default `dev-admin` via `ADMIN_TOKEN`) shows the
-ingestion log, active model, and squad-availability toggles. Marking a player
-out lowers their team's effective Elo; re-run `python3 ml/predict.py` to refresh
-stored predictions. `GET /api/health` reports DB status and data freshness.
+ingestion log, active model, and squad-availability toggles. The **Refresh data
+& predictions** button runs the whole update pipeline (ingest results → retrain →
+re-simulate) in one click. Marking a player out lowers their team's effective
+Elo. `GET /api/health` reports DB status and data freshness.
 
 ## Limitations
 

@@ -62,10 +62,25 @@ def test_stronger_team_more_likely_champion():
     check("strongest team is the favourite", champ["team"] == STRONGEST)
 
 
+def test_played_results_respected():
+    # weakest team in group A is T03A; force it to beat the two strongest in its group
+    weak = "T03A"
+    others = [t for t in GROUPS["A"] if t != weak]
+    strong_two = sorted(others, key=lambda t: -ELO[t])[:2]
+    played = {frozenset((weak, s)): (weak, 3, 0) for s in strong_two}
+
+    base = {r["team"]: r for r in sim.simulate(GROUPS, ELO, PARAMS, iterations=4000, seed=5)}
+    withres = {r["team"]: r for r in
+               sim.simulate(GROUPS, ELO, PARAMS, played=played, iterations=4000, seed=5)}
+    check("forced wins raise the weak team's qualification odds",
+          withres[weak]["pTop2"] > base[weak]["pTop2"] + 0.1)
+
+
 if __name__ == "__main__":
     print("Simulation tests:")
     for fn in [test_determinism, test_probability_validity, test_round_monotonicity,
-               test_champion_normalisation, test_stronger_team_more_likely_champion]:
+               test_champion_normalisation, test_stronger_team_more_likely_champion,
+               test_played_results_respected]:
         fn()
     if failures:
         sys.exit(f"\n{len(failures)} test(s) failed: {failures}")

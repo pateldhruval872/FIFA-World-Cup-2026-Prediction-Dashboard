@@ -52,7 +52,14 @@ def play(elo_a, elo_b, params, rng) -> int:
     return 0 if rng.random() < pa else 1
 
 
-def simulate(groups, elo, params, iterations=ITERATIONS, seed=SEED):
+def simulate(groups, elo, params, played=None, iterations=ITERATIONS, seed=SEED):
+    """Tournament-aware Monte Carlo.
+
+    `played` is { frozenset({home, away}): (homeName, homeScore, awayScore) } for
+    group matches that have actually been played; those use the real score every
+    iteration, while remaining matches are sampled from the model.
+    """
+    played = played or {}
     rng = np.random.default_rng(seed)
     teams = [t for g in groups.values() for t in g]
     n = len(teams)
@@ -77,8 +84,13 @@ def simulate(groups, elo, params, iterations=ITERATIONS, seed=SEED):
             for i in range(len(gteams)):
                 for j in range(i + 1, len(gteams)):
                     a, b = gteams[i], gteams[j]
-                    la, lb = poisson.lambdas(params, elo[a], elo[b], neutral=True)
-                    sa, sb = rng.poisson(la), rng.poisson(lb)
+                    actual = played.get(frozenset((a, b)))
+                    if actual is not None:
+                        home_name, hs, as_ = actual
+                        sa, sb = (hs, as_) if home_name == a else (as_, hs)
+                    else:
+                        la, lb = poisson.lambdas(params, elo[a], elo[b], neutral=True)
+                        sa, sb = rng.poisson(la), rng.poisson(lb)
                     gd[a] += sa - sb
                     gd[b] += sb - sa
                     gf[a] += sa
@@ -153,12 +165,14 @@ def main():
     params = poisson.PoissonParams.from_dict(json.loads(model["metrics"])["params"])
     elo = db.fetch_team_elo(conn)
     groups = db.fetch_groups(conn)
+    played = db.fetch_played_group_results(conn)
 
-    print(f"Simulating {ITERATIONS:,} tournaments (seed {SEED})…")
-    rows = simulate(groups, elo, params)
+    note = f" ({len(played)} group matches played)" if played else " (pre-tournament)"
+    print(f"Simulating {ITERATIONS:,} tournaments (seed {SEED}){note}…")
+    rows = simulate(groups, elo, params, played=played)
 
     results = {
-        "seed": SEED, "iterations": ITERATIONS,
+        "seed": SEED, "iterations": ITERATIONS, "playedGroupMatches": len(played),
         "groups": {g: [r["team"] for r in rows if r["team"] in groups[g]]
                    for g in groups},
         "teams": rows,

@@ -1,0 +1,15 @@
+{
+  "_comment": "Authoritative FIFA World Cup 2026 group assignments (official match schedule v17). Team names must match data/seed/teams_meta.json exactly.",
+  "A": ["Mexico", "South Korea", "Czech Republic", "South Africa"],
+  "B": ["Canada", "Switzerland", "Bosnia and Herzegovina", "Qatar"],
+  "C": ["Brazil", "Morocco", "Haiti", "Scotland"],
+  "D": ["United States", "Paraguay", "Australia", "Turkey"],
+  "E": ["Germany", "Ivory Coast", "Curaçao", "Ecuador"],
+  "F": ["Netherlands", "Japan", "Sweden", "Tunisia"],
+  "G": ["Belgium", "Egypt", "Iran", "New Zealand"],
+  "H": ["Spain", "Uruguay", "Cape Verde", "Saudi Arabia"],
+  "I": ["France", "Senegal", "Iraq", "Norway"],
+  "J": ["Argentina", "Algeria", "Austria", "Jordan"],
+  "K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"],
+  "L": ["England", "Croatia", "Ghana", "Panama"]
+}

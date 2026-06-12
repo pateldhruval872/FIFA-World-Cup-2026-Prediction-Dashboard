@@ -54,13 +54,7 @@ def main():
         adj[r["away_team"]].add(r["home_team"])
 
     seen, comps = set(), []
-    # deterministic ordering: by earliest fixture appearance
-    order = []
-    for r in rows:
-        for t in (r["home_team"], r["away_team"]):
-            if t not in order:
-                order.append(t)
-    for t in order:
+    for t in adj:
         if t in seen:
             continue
         stack, comp = [t], []
@@ -71,15 +65,31 @@ def main():
             seen.add(x)
             comp.append(x)
             stack.extend(adj[x] - seen)
-        comps.append(sorted(comp))
+        comps.append(frozenset(comp))
 
+    # --- authoritative group labels (official FIFA schedule) ---
+    official = load_meta("official_groups.json")
     group_of = {}
     groups = []
-    for i, comp in enumerate(comps):
-        label = chr(ord("A") + i)
-        groups.append({"label": label, "teams": comp})
-        for t in comp:
+    for label in sorted(official):
+        members = sorted(official[label])
+        groups.append({"label": label, "teams": members})
+        for t in members:
             group_of[t] = label
+
+    # validate: the official groupings must match the fixtures (who plays whom)
+    official_sets = {frozenset(v) for v in official.values()}
+    derived_sets = set(comps)
+    if official_sets != derived_sets:
+        missing = derived_sets - official_sets
+        extra = official_sets - derived_sets
+        raise SystemExit(
+            "Official groups do not match the fixture-derived groupings.\n"
+            f"  In fixtures but not official: {missing}\n"
+            f"  In official but not fixtures: {extra}\n"
+            "Check team names in data/seed/official_groups.json.")
+    if set(group_of) != {t for c in comps for t in c}:
+        raise SystemExit("official_groups.json team set differs from the fixtures.")
 
     # --- venues ---
     venues = []

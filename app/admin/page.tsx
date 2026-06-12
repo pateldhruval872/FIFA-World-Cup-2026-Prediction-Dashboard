@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getDataSourceLogs, getActiveModel } from "@/lib/queries";
 import { dateLabel } from "@/lib/format";
+import { RefreshButton } from "@/components/RefreshButton";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,10 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Admin Console</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold">Admin Console</h1>
+        <RefreshButton />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="card p-5">

@@ -27,6 +27,9 @@ npx tsx prisma/seed.ts
 echo "[setup] ingest sample squads…"
 python3 ml/ingest/squads.py
 
+echo "[setup] ingest any played WC2026 results…"
+python3 ml/ingest/match_results.py
+
 echo "[setup] train model + predictions…"
 python3 ml/predict.py
 

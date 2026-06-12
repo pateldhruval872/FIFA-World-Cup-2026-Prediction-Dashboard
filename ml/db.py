@@ -130,6 +130,42 @@ def fetch_unavailable_impact(conn):
     return {r["team"]: r["impact"] for r in rows}
 
 
+def fetch_group_team_pairs(conn):
+    """Group-stage matches keyed by frozenset of team names -> match id."""
+    rows = conn.execute(
+        "SELECT m.id, ht.name AS home, at.name AS away "
+        "FROM \"Match\" m "
+        "JOIN Team ht ON ht.id = m.homeTeamId "
+        "JOIN Team at ON at.id = m.awayTeamId "
+        "WHERE m.stage = 'GROUP'"
+    ).fetchall()
+    return rows
+
+
+def set_match_result(conn, match_id, home_score, away_score):
+    conn.execute(
+        "UPDATE \"Match\" SET homeScore = ?, awayScore = ?, status = 'PLAYED' "
+        "WHERE id = ?",
+        (home_score, away_score, match_id),
+    )
+
+
+def fetch_played_group_results(conn):
+    """{ frozenset({home, away}): (homeName, homeScore, awayScore) } for played games."""
+    rows = conn.execute(
+        "SELECT ht.name AS home, at.name AS away, m.homeScore AS hs, m.awayScore AS as_ "
+        "FROM \"Match\" m "
+        "JOIN Team ht ON ht.id = m.homeTeamId "
+        "JOIN Team at ON at.id = m.awayTeamId "
+        "WHERE m.stage = 'GROUP' AND m.status = 'PLAYED' "
+        "AND m.homeScore IS NOT NULL AND m.awayScore IS NOT NULL"
+    ).fetchall()
+    out = {}
+    for r in rows:
+        out[frozenset((r["home"], r["away"]))] = (r["home"], r["hs"], r["as_"])
+    return out
+
+
 def team_id_by_name(conn):
     return {r["name"]: r["id"] for r in conn.execute("SELECT id, name FROM Team")}
 

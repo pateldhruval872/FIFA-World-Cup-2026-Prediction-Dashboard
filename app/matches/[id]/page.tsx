@@ -17,6 +17,7 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
   const pred = match.predictions[0] ?? null;
   const home = match.homeTeam?.name ?? "TBD";
   const away = match.awayTeam?.name ?? "TBD";
+  const played = match.status === "PLAYED" && match.homeScore != null && match.awayScore != null;
 
   const features: FeatureSnapshot | null = pred ? JSON.parse(pred.featuresSnapshot) : null;
   const factors: KeyFactor[] = pred ? JSON.parse(pred.keyFactors) : [];
@@ -24,15 +25,22 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
 
   return (
     <div className="space-y-6">
-      <Link href="/" className="text-sm text-ink-500 hover:underline">← All matches</Link>
+      <Link href="/matches" className="text-sm text-ink-500 hover:underline">← All matches</Link>
 
       <div className="card p-6">
         <div className="mb-1 text-sm text-ink-400">
-          {stageLabel(match.stage)}{match.group ? ` · Group ${match.group.label}` : ""} · {kickoffLabel(match.kickoff)}
+          {stageLabel(match.stage)}{match.group ? ` · Group ${match.group.label}` : ""} ·{" "}
+          {played ? "Final result" : kickoffLabel(match.kickoff)}
         </div>
         <div className="flex items-center justify-between text-2xl font-bold">
           <Link href={match.homeTeam ? `/teams/${match.homeTeam.id}` : "#"} className="hover:underline">{home}</Link>
-          <span className="text-base font-normal text-ink-400">vs</span>
+          {played ? (
+            <span className="rounded-lg bg-pitch-900 px-3 py-1 text-white">
+              {match.homeScore} – {match.awayScore}
+            </span>
+          ) : (
+            <span className="text-base font-normal text-ink-400">vs</span>
+          )}
           <Link href={match.awayTeam ? `/teams/${match.awayTeam.id}` : "#"} className="hover:underline">{away}</Link>
         </div>
         <div className="mt-1 text-center text-sm text-ink-500">

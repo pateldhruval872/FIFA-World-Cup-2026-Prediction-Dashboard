@@ -27,7 +27,7 @@
     "homeLat": -35.28,
     "homeLng": 149.13,
     "homeAltitude": 577,
-    "group": "C"
+    "group": "D"
   },
   {
     "name": "Austria",
@@ -67,7 +67,7 @@
     "homeLat": -15.79,
     "homeLng": -47.88,
     "homeAltitude": 1172,
-    "group": "D"
+    "group": "C"
   },
   {
     "name": "Canada",
@@ -207,7 +207,7 @@
     "homeLat": 18.59,
     "homeLng": -72.31,
     "homeAltitude": 98,
-    "group": "D"
+    "group": "C"
   },
   {
     "name": "Iran",
@@ -277,7 +277,7 @@
     "homeLat": 34.02,
     "homeLng": -6.84,
     "homeAltitude": 75,
-    "group": "D"
+    "group": "C"
   },
   {
     "name": "Netherlands",
@@ -327,7 +327,7 @@
     "homeLat": -25.3,
     "homeLng": -57.64,
     "homeAltitude": 43,
-    "group": "C"
+    "group": "D"
   },
   {
     "name": "Portugal",
@@ -367,7 +367,7 @@
     "homeLat": 55.95,
     "homeLng": -3.19,
     "homeAltitude": 47,
-    "group": "D"
+    "group": "C"
   },
   {
     "name": "Senegal",
@@ -447,7 +447,7 @@
     "homeLat": 39.93,
     "homeLng": 32.86,
     "homeAltitude": 938,
-    "group": "C"
+    "group": "D"
   },
   {
     "name": "United States",
@@ -457,7 +457,7 @@
     "homeLat": 38.9,
     "homeLng": -77.04,
     "homeAltitude": 0,
-    "group": "C"
+    "group": "D"
   },
   {
     "name": "Uruguay",

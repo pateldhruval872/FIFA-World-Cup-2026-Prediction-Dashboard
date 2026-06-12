@@ -22,7 +22,7 @@
   {
     "matchNo": 3,
     "stage": "GROUP",
-    "group": "C",
+    "group": "D",
     "homeTeam": "United States",
     "awayTeam": "Paraguay",
     "city": "Inglewood",
@@ -42,7 +42,7 @@
   {
     "matchNo": 5,
     "stage": "GROUP",
-    "group": "D",
+    "group": "C",
     "homeTeam": "Brazil",
     "awayTeam": "Morocco",
     "city": "East Rutherford",
@@ -52,7 +52,7 @@
   {
     "matchNo": 6,
     "stage": "GROUP",
-    "group": "D",
+    "group": "C",
     "homeTeam": "Haiti",
     "awayTeam": "Scotland",
     "city": "Foxborough",
@@ -72,7 +72,7 @@
   {
     "matchNo": 8,
     "stage": "GROUP",
-    "group": "C",
+    "group": "D",
     "homeTeam": "Australia",
     "awayTeam": "Turkey",
     "city": "Vancouver",
@@ -282,7 +282,7 @@
   {
     "matchNo": 29,
     "stage": "GROUP",
-    "group": "D",
+    "group": "C",
     "homeTeam": "Scotland",
     "awayTeam": "Morocco",
     "city": "Foxborough",
@@ -292,7 +292,7 @@
   {
     "matchNo": 30,
     "stage": "GROUP",
-    "group": "D",
+    "group": "C",
     "homeTeam": "Brazil",
     "awayTeam": "Haiti",
     "city": "Philadelphia",
@@ -302,7 +302,7 @@
   {
     "matchNo": 31,
     "stage": "GROUP",
-    "group": "C",
+    "group": "D",
     "homeTeam": "Turkey",
     "awayTeam": "Paraguay",
     "city": "Santa Clara",
@@ -312,7 +312,7 @@
   {
     "matchNo": 32,
     "stage": "GROUP",
-    "group": "C",
+    "group": "D",
     "homeTeam": "United States",
     "awayTeam": "Australia",
     "city": "Seattle",
@@ -482,7 +482,7 @@
   {
     "matchNo": 49,
     "stage": "GROUP",
-    "group": "D",
+    "group": "C",
     "homeTeam": "Morocco",
     "awayTeam": "Haiti",
     "city": "Atlanta",
@@ -512,7 +512,7 @@
   {
     "matchNo": 52,
     "stage": "GROUP",
-    "group": "D",
+    "group": "C",
     "homeTeam": "Scotland",
     "awayTeam": "Brazil",
     "city": "Miami Gardens",
@@ -562,7 +562,7 @@
   {
     "matchNo": 57,
     "stage": "GROUP",
-    "group": "C",
+    "group": "D",
     "homeTeam": "United States",
     "awayTeam": "Turkey",
     "city": "Inglewood",
@@ -592,7 +592,7 @@
   {
     "matchNo": 60,
     "stage": "GROUP",
-    "group": "C",
+    "group": "D",
     "homeTeam": "Paraguay",
     "awayTeam": "Australia",
     "city": "Santa Clara",

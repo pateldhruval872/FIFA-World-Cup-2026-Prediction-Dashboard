@@ -6,8 +6,11 @@ export type KeyFactor = {
   factor: string;
   detail: string;
   impact: "High" | "Medium" | "Low";
+  impactPct?: number | null; // probability-point contribution; null = context only
   direction: string;
 };
+
+export type ReliabilityBin = { predicted: number; observed: number; count: number };
 
 export type FeatureSnapshot = {
   homeElo: number;
@@ -48,6 +51,8 @@ export type SimulationResults = {
 
 export type ModelMetrics = {
   logloss: number; brier: number; rps: number; accuracy: number;
+  calibratedLogloss?: number; calibrationApplied?: boolean;
   baselineLogloss: number; baselineAccuracy: number; testMatches: number;
+  reliability?: ReliabilityBin[];
   params?: Record<string, number>;
 };

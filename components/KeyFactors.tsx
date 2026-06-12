@@ -12,7 +12,11 @@ export function KeyFactors({ factors }: { factors: KeyFactor[] }) {
             <div className="text-xs text-ink-600">{f.detail}</div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <span className={`chip ${impactTone[f.impact] ?? impactTone.Low}`}>{f.impact}</span>
+            <span className={`chip ${impactTone[f.impact] ?? impactTone.Low}`}>
+              {f.impactPct != null && f.impactPct !== 0
+                ? `${f.impactPct > 0 ? "+" : ""}${f.impactPct} pp`
+                : f.impact}
+            </span>
             {f.direction !== "Even" && (
               <span className="text-xs font-medium text-ink-600">→ {f.direction}</span>
             )}

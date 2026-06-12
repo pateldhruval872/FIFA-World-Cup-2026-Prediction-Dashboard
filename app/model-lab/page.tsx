@@ -1,5 +1,6 @@
 import { getActiveModel } from "@/lib/queries";
 import { dateLabel, pct } from "@/lib/format";
+import { ReliabilityChart } from "@/components/ReliabilityChart";
 import type { ModelMetrics } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -56,13 +57,47 @@ export default async function ModelLabPage() {
         </div>
       )}
 
+      {metrics?.reliability && metrics.reliability.length > 0 && (
+        <div className="card p-5">
+          <h2 className="mb-1 font-semibold">Calibration</h2>
+          <p className="mb-4 text-xs text-ink-500">
+            A reliability diagram: each point is a probability bucket, plotted as
+            predicted vs. how often it actually happened. Points on the dashed
+            line are perfectly calibrated.
+          </p>
+          <div className="grid items-center gap-6 md:grid-cols-2">
+            <ReliabilityChart bins={metrics.reliability} />
+            <div className="space-y-3 text-sm">
+              <div className={`rounded-lg p-3 ${metrics.calibrationApplied ? "bg-pitch-50" : "bg-ink-50"}`}>
+                <div className="font-medium">
+                  {metrics.calibrationApplied
+                    ? "Isotonic calibration applied"
+                    : "Model ships raw (already well-calibrated)"}
+                </div>
+                <div className="mt-1 text-xs text-ink-600">
+                  Calibration is applied only when it improves hold-out log-loss.
+                  {metrics.calibratedLogloss != null && (
+                    <> Calibrated log-loss on the test set: {metrics.calibratedLogloss}.</>
+                  )}
+                </div>
+              </div>
+              <p className="text-xs text-ink-500">
+                Calibration matters most for the tournament simulation, where each
+                match probability compounds across seven knockout rounds.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card p-5">
         <h2 className="mb-3 font-semibold">How it works</h2>
         <ol className="list-inside list-decimal space-y-1.5 text-sm text-ink-600">
           <li>World-Football Elo ratings computed over ~150 years of international results (leakage-free, chronological).</li>
           <li>An Elo-conditioned Poisson model maps the rating difference to expected goals for each side.</li>
           <li>An independent-Poisson scoreline matrix yields win/draw/loss probabilities and the likeliest scores.</li>
-          <li>Group standings come from {(5000).toLocaleString()} seeded Monte Carlo simulations.</li>
+          <li>Probabilities pass through an isotonic calibration check (applied only when it improves hold-out log-loss).</li>
+          <li>Champion odds come from {(20000).toLocaleString()} seeded full-tournament Monte Carlo simulations.</li>
         </ol>
       </div>
 
@@ -72,7 +107,7 @@ export default async function ModelLabPage() {
           <li>No squad, injury, or player-availability data yet — late changes are not reflected.</li>
           <li>The expanded 48-team format has little historical precedent; novel matchups carry extra uncertainty.</li>
           <li>Travel, rest-day and altitude effects are not yet in the model (shown as context only).</li>
-          <li>Independent Poisson slightly under-models draws; calibration is on the roadmap.</li>
+          <li>Independent Poisson can slightly under-model draws; calibration is monitored and applied when it helps.</li>
           <li>Single matches are inherently high-variance — treat every probability as a distribution, not a verdict.</li>
         </ul>
       </div>

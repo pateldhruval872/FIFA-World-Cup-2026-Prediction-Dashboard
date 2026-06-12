@@ -21,9 +21,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from elo import load_results, compute_elo  # noqa: E402
 from models import poisson  # noqa: E402
 import backtest as bt  # noqa: E402
+from calibrate import IsotonicCalibrator  # noqa: E402
 import db  # noqa: E402
 
 MODEL_VERSION = "elo-poisson-v1"
+CALIB_WINDOW_DAYS = 365 * 5  # recent holdout for fitting the production calibrator
 RECENT_FORM_MATCHES = 12
 HALF_LIFE_DAYS = 730
 
@@ -35,25 +37,58 @@ def confidence(p_home, p_draw, p_away) -> float:
     return round(1 - ent / math.log(3), 3)
 
 
-def elo_bucket(diff: float) -> str:
-    a = abs(diff)
-    if a >= 150:
+def _pp_bucket(pp: float) -> str:
+    a = abs(pp)
+    if a >= 18:
         return "High"
-    if a >= 60:
+    if a >= 7:
         return "Medium"
     return "Low"
 
 
-def build_key_factors(home, away, home_elo, away_elo, neutral, form) -> list[dict]:
+def build_key_factors(home, away, home_elo, away_elo, neutral, form,
+                      params, final_p) -> list[dict]:
+    """Quantified explanation: each factor's contribution in probability points.
+
+    Contributions are measured against an even-teams, neutral-venue reference by
+    toggling one input at a time (Elo gap, then home field), so they sum to the
+    model's actual win-probability shift — a faithful per-prediction attribution.
+    """
     diff = home_elo - away_elo
-    favored = home if diff > 0 else away
+    favored = home if diff >= 0 else away
+
+    base = poisson.predict(params, 1500, 1500, neutral=True)   # symmetric reference
+    elo_only = poisson.predict(params, home_elo, away_elo, neutral=True)
+    full = poisson.predict(params, home_elo, away_elo, neutral)
+
+    def fav_p(pr):
+        return pr["pHome"] if favored == home else pr["pAway"]
+
+    elo_pp = (fav_p(elo_only) - fav_p(base)) * 100
     factors = [{
         "factor": "Elo rating edge",
         "detail": f"{home} {home_elo:.0f} — {away} {away_elo:.0f} "
                   f"({'+' if diff >= 0 else ''}{diff:.0f})",
-        "impact": elo_bucket(diff),
-        "direction": favored if abs(diff) >= 20 else "Even",
+        "impact": _pp_bucket(elo_pp),
+        "impactPct": round(elo_pp),
+        "direction": favored if abs(elo_pp) >= 2 else "Even",
     }]
+
+    if not neutral:
+        home_pp = (full["pHome"] - elo_only["pHome"]) * 100
+        factors.append({
+            "factor": "Home-nation advantage",
+            "detail": "Host nation playing on home soil",
+            "impact": _pp_bucket(home_pp),
+            "impactPct": round(home_pp),
+            "direction": home,
+        })
+    else:
+        factors.append({
+            "factor": "Venue",
+            "detail": "Neutral site — no host advantage applied",
+            "impact": "Low", "impactPct": 0, "direction": "Even",
+        })
 
     hf, af = form.get(home), form.get(away)
     if hf and af:
@@ -61,19 +96,11 @@ def build_key_factors(home, away, home_elo, away_elo, neutral, form) -> list[dic
         favored_form = home if atk_gap > 0 else away
         factors.append({
             "factor": "Recent attacking form",
-            "detail": f"{home} {hf['gf']:.1f} gpg vs {away} {af['gf']:.1f} gpg "
-                      "(last 12)",
+            "detail": f"{home} {hf['gf']:.1f} gpg vs {away} {af['gf']:.1f} gpg (last 12)",
             "impact": "Medium" if abs(atk_gap) > 0.4 else "Low",
+            "impactPct": None,  # context only — not a model driver
             "direction": favored_form if abs(atk_gap) > 0.1 else "Even",
         })
-
-    factors.append({
-        "factor": "Venue",
-        "detail": "Neutral site (no host advantage applied)" if neutral
-                  else "Host-nation advantage applied",
-        "impact": "Low" if neutral else "Medium",
-        "direction": "Even" if neutral else home,
-    })
     return factors
 
 
@@ -144,6 +171,18 @@ def main():
             db.upsert_team_form(conn, tid, as_of, f["last5"], f["gf"], f["ga"],
                                 f["attack"], f["defense"])
 
+    # Calibration is applied to shipped predictions only if the backtest shows it
+    # improves test log-loss. A well-calibrated raw model legitimately ships raw.
+    calibration_applied = bool(metrics["calibrationHelps"])
+    calibrator = None
+    if calibration_applied:
+        recent = df[df["date"] >= cutoff_ts - pd.Timedelta(days=CALIB_WINDOW_DAYS)]
+        calibrator = IsotonicCalibrator.fit(bt.predict_probs(params, recent), bt.onehot(recent))
+        print(f"      calibration applied (improves log-loss "
+              f"{metrics['model']['logloss']} -> {metrics['calibrated']['logloss']})")
+    else:
+        print("      model already well-calibrated — shipping raw probabilities")
+
     print("[5/6] Predict fixtures…")
     db.deactivate_models(conn)
     db.delete_model_version(conn, MODEL_VERSION)
@@ -152,9 +191,13 @@ def main():
         "brier": metrics["model"]["brier"],
         "rps": metrics["model"]["rps"],
         "accuracy": metrics["model"]["accuracy"],
+        "calibratedLogloss": metrics["calibrated"]["logloss"],
+        "calibrationApplied": calibration_applied,
         "baselineLogloss": metrics["baseline"]["logloss"],
         "baselineAccuracy": metrics["baseline"]["accuracy"],
         "testMatches": metrics["testMatches"],
+        "reliability": metrics["reliabilityCalibrated"] if calibration_applied
+        else metrics["reliabilityRaw"],
         "params": params.to_dict(),
     })
     mid = db.insert_model_version(conn, MODEL_VERSION, "Elo-conditioned Poisson",
@@ -169,14 +212,17 @@ def main():
         neutral = bool(m["neutral"])
         pred = poisson.predict(params, eh, ea, neutral)
         p = (pred["pHome"], pred["pDraw"], pred["pAway"])
+        if calibrator is not None:
+            p = calibrator.transform_one(*p)
         conf = confidence(*p)
         features = {
             "homeElo": round(eh, 1), "awayElo": round(ea, 1),
             "eloDiff": round(eh - ea, 1), "neutral": neutral,
             "lambdaHome": pred["expGoalsHome"], "lambdaAway": pred["expGoalsAway"],
             "homeForm": form.get(home), "awayForm": form.get(away),
+            "calibrated": calibration_applied,
         }
-        key_factors = build_key_factors(home, away, eh, ea, neutral, form)
+        key_factors = build_key_factors(home, away, eh, ea, neutral, form, params, p)
         db.insert_prediction(
             conn, m["id"], mid, p, pred["expGoalsHome"], pred["expGoalsAway"],
             json.dumps(pred["scorelineDist"]), json.dumps(features),

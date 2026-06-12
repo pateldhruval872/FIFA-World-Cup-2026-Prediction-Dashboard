@@ -48,6 +48,7 @@ async function main() {
   await prisma.match.deleteMany();
   await prisma.teamForm.deleteMany();
   await prisma.ranking.deleteMany();
+  await prisma.playerMetric.deleteMany();
   await prisma.squadEntry.deleteMany();
   await prisma.player.deleteMany();
   await prisma.team.deleteMany();

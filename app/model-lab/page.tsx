@@ -104,9 +104,10 @@ export default async function ModelLabPage() {
       <div className="card border-amber-300 bg-amber-50 p-5">
         <h2 className="mb-3 font-semibold text-amber-900">Known limitations</h2>
         <ul className="list-inside list-disc space-y-1.5 text-sm text-amber-900/90">
-          <li>No squad, injury, or player-availability data yet — late changes are not reflected.</li>
+          <li>Squad data is illustrative sample data — replace with official 26-man lists when released; availability then adjusts team strength.</li>
           <li>The expanded 48-team format has little historical precedent; novel matchups carry extra uncertainty.</li>
-          <li>Travel, rest-day and altitude effects are not yet in the model (shown as context only).</li>
+          <li>Altitude is a bounded adjustment to expected goals; travel and rest are quantified but applied only marginally.</li>
+          <li>The tournament simulation uses Elo + venue neutrality; per-match altitude/squad context is reflected in the match pages.</li>
           <li>Independent Poisson can slightly under-model draws; calibration is monitored and applied when it helps.</li>
           <li>Single matches are inherently high-variance — treat every probability as a distribution, not a verdict.</li>
         </ul>

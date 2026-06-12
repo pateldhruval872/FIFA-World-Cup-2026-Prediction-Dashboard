@@ -59,7 +59,8 @@ npm run prisma:generate
 npm run prisma:push          # creates prisma/dev.db
 npm run seed:db              # loads teams/groups/venues/fixtures
 
-# 4. Train the model, write predictions, run the tournament simulation
+# 4. Ingest sample squads, train, predict, simulate
+python3 ml/ingest/squads.py
 python3 ml/predict.py
 python3 ml/simulate.py
 
@@ -119,13 +120,25 @@ instead of `sqlite3`. The schema's `Json`-style columns map cleanly to JSONB.
 
 ## Roadmap
 
-Implemented: **Phase 1** (data model + dashboard) · **Phase 2** (ingestion) ·
-**Phase 3** (baseline model) · **Phase 4** (match prediction UI) · **Phase 5**
-(group + knockout simulation, champion odds).
+All eight planned phases are implemented:
 
-Next: player/squad & injury signals, travel/altitude features in the model,
-probability calibration + SHAP explainability (Phase 7), and production
-hardening — auth, monitoring, scheduled refresh (Phase 8).
+**Phase 1** data model + dashboard · **Phase 2** ingestion · **Phase 3** baseline
+model + backtest gate · **Phase 4** match prediction UI · **Phase 5** group +
+knockout simulation and champion odds · **Phase 6** player/venue impact and
+travel/altitude context · **Phase 7** probability calibration + quantified
+explainability · **Phase 8** production hardening (admin auth, health endpoint,
+CI).
+
+Future work: ingest official 26-man squads when released, geocode historical
+venues to train travel/rest/altitude as first-class features, add SHAP for
+richer models, and wire scheduled refresh.
+
+## Admin console
+
+`/admin` (cookie-token auth, default `dev-admin` via `ADMIN_TOKEN`) shows the
+ingestion log, active model, and squad-availability toggles. Marking a player
+out lowers their team's effective Elo; re-run `python3 ml/predict.py` to refresh
+stored predictions. `GET /api/health` reports DB status and data freshness.
 
 ## Limitations
 

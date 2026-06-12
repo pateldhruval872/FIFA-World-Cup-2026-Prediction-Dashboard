@@ -83,6 +83,44 @@ export async function getSimulation(scope = "FULL") {
   });
 }
 
+export async function getVenue(id: string) {
+  return prisma.venue.findUnique({
+    where: { id },
+    include: {
+      matches: {
+        orderBy: { kickoff: "asc" },
+        include: { homeTeam: true, awayTeam: true, group: true },
+      },
+    },
+  });
+}
+
+export async function getVenues() {
+  return prisma.venue.findMany({ orderBy: { altitude: "desc" } });
+}
+
+export async function getPlayer(id: string) {
+  return prisma.player.findUnique({
+    where: { id },
+    include: {
+      nationalTeam: true,
+      metrics: { orderBy: { date: "desc" } },
+      squadEntries: true,
+    },
+  });
+}
+
+export async function getTeamSquad(teamId: string) {
+  return prisma.squadEntry.findMany({
+    where: { teamId },
+    include: { player: { include: { metrics: { where: { metricType: "impact" } } } } },
+  });
+}
+
+export async function getDataSourceLogs() {
+  return prisma.dataSourceLog.findMany({ orderBy: { runAt: "desc" }, take: 20 });
+}
+
 export async function getDataFreshness() {
   const log = await prisma.dataSourceLog.findFirst({ orderBy: { runAt: "desc" } });
   const model = await getActiveModel();

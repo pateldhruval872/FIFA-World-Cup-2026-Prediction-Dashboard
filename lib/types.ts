@@ -12,6 +12,13 @@ export type KeyFactor = {
 
 export type ReliabilityBin = { predicted: number; observed: number; count: number };
 
+export type ContextFeature = {
+  travelKm: number | null;
+  altitudePenalty: number;
+  restDays: number | null;
+  goalFactor: number;
+};
+
 export type FeatureSnapshot = {
   homeElo: number;
   awayElo: number;
@@ -21,6 +28,14 @@ export type FeatureSnapshot = {
   lambdaAway: number;
   homeForm: TeamFormSnapshot | null;
   awayForm: TeamFormSnapshot | null;
+  calibrated?: boolean;
+  venue?: string;
+  city?: string;
+  venueAltitude?: number;
+  homeContext?: ContextFeature;
+  awayContext?: ContextFeature;
+  homeUnavailableImpact?: number;
+  awayUnavailableImpact?: number;
 };
 
 export type TeamFormSnapshot = {

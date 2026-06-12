@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "file:./dev.db"
+      ADMIN_TOKEN: "ci-token"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: pip install -r ml/requirements.txt
+
+      - name: Fetch source dataset
+        run: |
+          mkdir -p data/raw
+          curl -sSf https://raw.githubusercontent.com/martj42/international_results/master/results.csv \
+            -o data/raw/results.csv
+
+      - name: Build seed + database
+        run: |
+          python3 ml/ingest/build_seed.py
+          npx prisma generate
+          npx prisma db push --skip-generate
+          npx tsx prisma/seed.ts
+
+      - name: Train + simulate
+        run: |
+          python3 ml/predict.py
+          python3 ml/simulate.py
+
+      - name: Python tests
+        run: |
+          python3 tests/test_model.py
+          python3 tests/test_simulate.py
+          python3 tests/test_calibrate.py
+          python3 tests/test_context.py
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests (Vitest)
+        run: npm run test
+
+      - name: Build
+        run: npm run build

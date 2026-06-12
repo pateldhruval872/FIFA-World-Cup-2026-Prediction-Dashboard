@@ -1,0 +1,38 @@
+{
+  "_comment": "ILLUSTRATIVE SAMPLE squad data to demonstrate the player-impact mechanism. Replace with official 26-man squads (released ~June 2026) via ml/ingest/squads.py. 'impact' = approximate Elo points a team loses if that player is unavailable.",
+  "Argentina": [
+    { "name": "Lionel Messi", "position": "FWD", "club": "Inter Miami", "impact": 35 },
+    { "name": "Lautaro Martínez", "position": "FWD", "club": "Inter Milan", "impact": 22 },
+    { "name": "Enzo Fernández", "position": "MID", "club": "Chelsea", "impact": 18 },
+    { "name": "Emiliano Martínez", "position": "GK", "club": "Aston Villa", "impact": 16 },
+    { "name": "Cristian Romero", "position": "DEF", "club": "Tottenham", "impact": 14 }
+  ],
+  "France": [
+    { "name": "Kylian Mbappé", "position": "FWD", "club": "Real Madrid", "impact": 34 },
+    { "name": "Aurélien Tchouaméni", "position": "MID", "club": "Real Madrid", "impact": 18 },
+    { "name": "Antoine Griezmann", "position": "FWD", "club": "Atlético Madrid", "impact": 20 },
+    { "name": "William Saliba", "position": "DEF", "club": "Arsenal", "impact": 15 },
+    { "name": "Mike Maignan", "position": "GK", "club": "AC Milan", "impact": 14 }
+  ],
+  "Spain": [
+    { "name": "Rodri", "position": "MID", "club": "Manchester City", "impact": 28 },
+    { "name": "Lamine Yamal", "position": "FWD", "club": "Barcelona", "impact": 24 },
+    { "name": "Pedri", "position": "MID", "club": "Barcelona", "impact": 20 },
+    { "name": "Nico Williams", "position": "FWD", "club": "Athletic Bilbao", "impact": 16 },
+    { "name": "Unai Simón", "position": "GK", "club": "Athletic Bilbao", "impact": 12 }
+  ],
+  "Brazil": [
+    { "name": "Vinícius Júnior", "position": "FWD", "club": "Real Madrid", "impact": 30 },
+    { "name": "Rodrygo", "position": "FWD", "club": "Real Madrid", "impact": 20 },
+    { "name": "Bruno Guimarães", "position": "MID", "club": "Newcastle", "impact": 18 },
+    { "name": "Marquinhos", "position": "DEF", "club": "PSG", "impact": 15 },
+    { "name": "Alisson", "position": "GK", "club": "Liverpool", "impact": 16 }
+  ],
+  "England": [
+    { "name": "Jude Bellingham", "position": "MID", "club": "Real Madrid", "impact": 28 },
+    { "name": "Harry Kane", "position": "FWD", "club": "Bayern Munich", "impact": 26 },
+    { "name": "Bukayo Saka", "position": "FWD", "club": "Arsenal", "impact": 20 },
+    { "name": "Declan Rice", "position": "MID", "club": "Arsenal", "impact": 18 },
+    { "name": "Jordan Pickford", "position": "GK", "club": "Everton", "impact": 12 }
+  ]
+}

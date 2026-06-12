@@ -1,14 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTeam, getTeamFixtures } from "@/lib/queries";
+import { getTeam, getTeamFixtures, getTeamSquad } from "@/lib/queries";
 import { kickoffLabel, stageLabel, pct } from "@/lib/format";
+import { PlayerImpactCard } from "@/components/PlayerImpactCard";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage({ params }: { params: { id: string } }) {
   const team = await getTeam(params.id);
   if (!team) notFound();
-  const fixtures = await getTeamFixtures(params.id);
+  const [fixtures, squad] = await Promise.all([
+    getTeamFixtures(params.id),
+    getTeamSquad(params.id),
+  ]);
 
   const elo = team.rankings[0]?.elo;
   const form = team.forms[0];
@@ -48,6 +52,23 @@ export default async function TeamPage({ params }: { params: { id: string } }) {
           <Link href="/simulator" className="mt-3 inline-block text-sm text-pitch-700 hover:underline">
             See projected standings →
           </Link>
+        </div>
+      )}
+
+      {squad.length > 0 && (
+        <div className="card p-5">
+          <h2 className="mb-1 font-semibold">Key players</h2>
+          <p className="mb-3 text-[11px] text-ink-400">
+            Illustrative sample squad — marking a player unavailable lowers the team&apos;s
+            effective Elo and shifts predictions.
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {squad.map((s) => (
+              <PlayerImpactCard key={s.id} id={s.playerId} name={s.player.name}
+                position={s.player.position} club={s.player.club}
+                impact={s.player.metrics[0]?.value ?? null} available={s.isAvailable} />
+            ))}
+          </div>
         </div>
       )}
 

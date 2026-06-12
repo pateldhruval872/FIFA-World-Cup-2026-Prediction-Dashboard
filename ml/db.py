@@ -99,12 +99,35 @@ def log_data_source(conn, source, status, ingested, rejected, data_hash, error=N
 
 def fetch_group_matches(conn):
     return conn.execute(
-        "SELECT m.id, m.stage, ht.name AS home, at.name AS away, m.neutral "
+        "SELECT m.id, m.stage, m.kickoff, m.neutral, "
+        "ht.name AS home, at.name AS away, "
+        "ht.homeLat AS h_lat, ht.homeLng AS h_lng, ht.homeAltitude AS h_alt, "
+        "at.homeLat AS a_lat, at.homeLng AS a_lng, at.homeAltitude AS a_alt, "
+        "v.name AS venue, v.city AS city, v.lat AS v_lat, v.lng AS v_lng, "
+        "v.altitude AS v_alt "
         "FROM \"Match\" m "
         "JOIN Team ht ON ht.id = m.homeTeamId "
         "JOIN Team at ON at.id = m.awayTeamId "
-        "WHERE m.homeTeamId IS NOT NULL AND m.awayTeamId IS NOT NULL"
+        "JOIN Venue v ON v.id = m.venueId "
+        "WHERE m.homeTeamId IS NOT NULL AND m.awayTeamId IS NOT NULL "
+        "ORDER BY m.kickoff"
     ).fetchall()
+
+
+def fetch_unavailable_impact(conn):
+    """{ teamName: total Elo impact of unavailable squad players }.
+
+    Empty until squads are ingested — predictions then degrade gracefully.
+    """
+    rows = conn.execute(
+        "SELECT t.name AS team, COALESCE(SUM(pm.value), 0) AS impact "
+        "FROM SquadEntry se "
+        "JOIN Team t ON t.id = se.teamId "
+        "JOIN PlayerMetric pm ON pm.playerId = se.playerId AND pm.metricType = 'impact' "
+        "WHERE se.isAvailable = 0 "
+        "GROUP BY t.name"
+    ).fetchall()
+    return {r["team"]: r["impact"] for r in rows}
 
 
 def team_id_by_name(conn):

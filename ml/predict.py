@@ -22,6 +22,7 @@ from elo import load_results, compute_elo  # noqa: E402
 from models import poisson  # noqa: E402
 import backtest as bt  # noqa: E402
 from calibrate import IsotonicCalibrator  # noqa: E402
+import context  # noqa: E402
 import db  # noqa: E402
 
 MODEL_VERSION = "elo-poisson-v1"
@@ -47,7 +48,7 @@ def _pp_bucket(pp: float) -> str:
 
 
 def build_key_factors(home, away, home_elo, away_elo, neutral, form,
-                      params, final_p) -> list[dict]:
+                      params, final_p, ctx_h=None, ctx_a=None) -> list[dict]:
     """Quantified explanation: each factor's contribution in probability points.
 
     Contributions are measured against an even-teams, neutral-venue reference by
@@ -100,6 +101,27 @@ def build_key_factors(home, away, home_elo, away_elo, neutral, form,
             "impact": "Medium" if abs(atk_gap) > 0.4 else "Low",
             "impactPct": None,  # context only — not a model driver
             "direction": favored_form if abs(atk_gap) > 0.1 else "Even",
+        })
+
+    # Altitude adjustment (a real model input): whichever side is hurt more.
+    if ctx_h and ctx_a and (ctx_h["altitudePenalty"] or ctx_a["altitudePenalty"]):
+        ph, pa = ctx_h["altitudePenalty"], ctx_a["altitudePenalty"]
+        hurt = away if ph < pa else home  # bigger penalty = bigger disadvantage
+        factors.append({
+            "factor": "Altitude",
+            "detail": f"Goal output adjusted −{max(ph, pa) * 100:.0f}% for the "
+                      "less-acclimatised side at this venue",
+            "impact": "Medium" if max(ph, pa) >= 0.06 else "Low",
+            "impactPct": None,
+            "direction": home if hurt == away else away,  # favours the other side
+        })
+
+    if ctx_h and ctx_a and ctx_h.get("travelKm") and ctx_a.get("travelKm"):
+        factors.append({
+            "factor": "Travel",
+            "detail": f"{home} {ctx_h['travelKm']:,} km vs {away} "
+                      f"{ctx_a['travelKm']:,} km from home base",
+            "impact": "Low", "impactPct": None, "direction": "Even",
         })
     return factors
 
@@ -204,28 +226,53 @@ def main():
                                   raw_hash, metrics_json)
     db.clear_predictions(conn)
 
+    unavailable = db.fetch_unavailable_impact(conn)  # {} until squads ingested
     matches = db.fetch_group_matches(conn)
+    last_played: dict[str, int] = {}  # team -> kickoff ms, for rest-day computation
     written = 0
     for m in matches:
         home, away = m["home"], m["away"]
-        eh, ea = ratings.get(home, 1500.0), ratings.get(away, 1500.0)
+        # squad availability lowers a team's effective Elo by absent players' impact
+        eh = ratings.get(home, 1500.0) - unavailable.get(home, 0.0)
+        ea = ratings.get(away, 1500.0) - unavailable.get(away, 0.0)
         neutral = bool(m["neutral"])
-        pred = poisson.predict(params, eh, ea, neutral)
-        p = (pred["pHome"], pred["pDraw"], pred["pAway"])
+
+        venue = {"lat": m["v_lat"], "lng": m["v_lng"], "altitude": m["v_alt"]}
+        ko = m["kickoff"]
+        rest_h = (ko - last_played[home]) / 86_400_000 if home in last_played else None
+        rest_a = (ko - last_played[away]) / 86_400_000 if away in last_played else None
+        last_played[home] = last_played[away] = ko
+        ctx_h = context.context_for_team(m["h_lat"], m["h_lng"], m["h_alt"], venue, rest_h)
+        ctx_a = context.context_for_team(m["a_lat"], m["a_lng"], m["a_alt"], venue, rest_a)
+
+        # base Poisson rates, then apply bounded altitude/rest goal factors
+        lam_h, lam_a = poisson.lambdas(params, eh, ea, neutral)
+        lam_h *= ctx_h["goalFactor"]
+        lam_a *= ctx_a["goalFactor"]
+        matrix = poisson.scoreline_matrix(lam_h, lam_a)
+        p = poisson.outcome_probs(matrix)
         if calibrator is not None:
             p = calibrator.transform_one(*p)
         conf = confidence(*p)
+
+        exp_h, exp_a = round(lam_h, 3), round(lam_a, 3)
+        scorelines = poisson.top_scorelines(matrix, 6)
         features = {
             "homeElo": round(eh, 1), "awayElo": round(ea, 1),
             "eloDiff": round(eh - ea, 1), "neutral": neutral,
-            "lambdaHome": pred["expGoalsHome"], "lambdaAway": pred["expGoalsAway"],
+            "lambdaHome": exp_h, "lambdaAway": exp_a,
             "homeForm": form.get(home), "awayForm": form.get(away),
             "calibrated": calibration_applied,
+            "venue": m["venue"], "city": m["city"], "venueAltitude": m["v_alt"],
+            "homeContext": ctx_h, "awayContext": ctx_a,
+            "homeUnavailableImpact": round(unavailable.get(home, 0.0), 1),
+            "awayUnavailableImpact": round(unavailable.get(away, 0.0), 1),
         }
-        key_factors = build_key_factors(home, away, eh, ea, neutral, form, params, p)
+        key_factors = build_key_factors(home, away, eh, ea, neutral, form, params, p,
+                                        ctx_h, ctx_a)
         db.insert_prediction(
-            conn, m["id"], mid, p, pred["expGoalsHome"], pred["expGoalsAway"],
-            json.dumps(pred["scorelineDist"]), json.dumps(features),
+            conn, m["id"], mid, p, exp_h, exp_a,
+            json.dumps(scorelines), json.dumps(features),
             json.dumps(key_factors), conf)
         written += 1
 

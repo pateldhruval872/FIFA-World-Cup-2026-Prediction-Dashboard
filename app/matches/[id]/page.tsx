@@ -99,6 +99,44 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
               </div>
             )}
           </div>
+
+          {features?.homeContext && features.awayContext && (
+            <div className="card p-5">
+              <h2 className="mb-3 font-semibold">Venue &amp; travel context</h2>
+              <div className="grid gap-4 sm:grid-cols-3 text-sm">
+                <div className="rounded-lg bg-ink-50 p-3">
+                  <div className="text-xs text-ink-400">Altitude</div>
+                  <div className="font-medium">{features.venueAltitude?.toLocaleString()} m</div>
+                  {(features.homeContext.altitudePenalty > 0 || features.awayContext.altitudePenalty > 0) && (
+                    <div className="mt-1 text-[11px] text-amber-700">
+                      −{Math.round(Math.max(features.homeContext.altitudePenalty, features.awayContext.altitudePenalty) * 100)}%
+                      goals for the less-acclimatised side
+                    </div>
+                  )}
+                </div>
+                <div className="rounded-lg bg-ink-50 p-3">
+                  <div className="text-xs text-ink-400">Travel from home base</div>
+                  <div className="font-medium">
+                    {home}: {features.homeContext.travelKm?.toLocaleString() ?? "—"} km
+                  </div>
+                  <div className="font-medium">
+                    {away}: {features.awayContext.travelKm?.toLocaleString() ?? "—"} km
+                  </div>
+                </div>
+                <div className="rounded-lg bg-ink-50 p-3">
+                  <div className="text-xs text-ink-400">Squad availability</div>
+                  <div className="font-medium">
+                    {(features.homeUnavailableImpact ?? 0) > 0
+                      ? `${home}: −${features.homeUnavailableImpact} Elo` : `${home}: full strength`}
+                  </div>
+                  <div className="font-medium">
+                    {(features.awayUnavailableImpact ?? 0) > 0
+                      ? `${away}: −${features.awayUnavailableImpact} Elo` : `${away}: full strength`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

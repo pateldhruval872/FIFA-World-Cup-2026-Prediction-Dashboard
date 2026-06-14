@@ -166,6 +166,50 @@ def fetch_played_group_results(conn):
     return out
 
 
+# --- squad ingestion shared by the sample loader and the live API adapter ---
+
+DEFAULT_IMPACT_BY_ROLE = {"Attacker": 15, "Midfielder": 12, "Defender": 9, "Goalkeeper": 9}
+
+
+def clear_squads(conn):
+    conn.execute("DELETE FROM PlayerMetric")
+    conn.execute("DELETE FROM SquadEntry")
+    conn.execute("DELETE FROM Player")
+
+
+def insert_squad_player(conn, tournament_id, team_id, name, position, club, impact):
+    pid = gen_id()
+    conn.execute(
+        "INSERT INTO Player (id, name, position, club, nationalTeamId) VALUES (?,?,?,?,?)",
+        (pid, name, position, club, team_id),
+    )
+    conn.execute(
+        "INSERT INTO SquadEntry (id, tournamentId, teamId, playerId, role, isAvailable) "
+        "VALUES (?,?,?,?,?,1)",
+        (gen_id(), tournament_id, team_id, pid, position),
+    )
+    conn.execute(
+        "INSERT INTO PlayerMetric (id, playerId, date, metricType, value, source) "
+        "VALUES (?,?,?,?,?,?)",
+        (gen_id(), pid, now_iso(), "impact", float(impact), "api"),
+    )
+    return pid
+
+
+def tournament_id(conn):
+    row = conn.execute("SELECT id FROM Tournament LIMIT 1").fetchone()
+    return row["id"] if row else None
+
+
+def set_availability_by_player(conn, team_id, player_name, available):
+    """Best-effort: flag a player's availability by (team, name) match."""
+    return conn.execute(
+        "UPDATE SquadEntry SET isAvailable = ? "
+        "WHERE teamId = ? AND playerId IN (SELECT id FROM Player WHERE name = ?)",
+        (1 if available else 0, team_id, player_name),
+    ).rowcount
+
+
 def team_id_by_name(conn):
     return {r["name"]: r["id"] for r in conn.execute("SELECT id, name FROM Team")}
 

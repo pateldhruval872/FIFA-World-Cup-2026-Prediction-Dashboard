@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMatch } from "@/lib/queries";
+import { getMatch, getTeamSquad } from "@/lib/queries";
 import { kickoffLabel, stageLabel, pct } from "@/lib/format";
 import { ProbabilityCard } from "@/components/ProbabilityCard";
 import { ModelConfidenceBadge } from "@/components/ModelConfidenceBadge";
 import { ScorelineChart } from "@/components/ScorelineChart";
 import { KeyFactors } from "@/components/KeyFactors";
+import { Lineups } from "@/components/Lineups";
 import type { FeatureSnapshot, KeyFactor, ScoreLine } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,11 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
   const home = match.homeTeam?.name ?? "TBD";
   const away = match.awayTeam?.name ?? "TBD";
   const played = match.status === "PLAYED" && match.homeScore != null && match.awayScore != null;
+
+  const [homeSquad, awaySquad] = await Promise.all([
+    match.homeTeamId ? getTeamSquad(match.homeTeamId) : Promise.resolve([]),
+    match.awayTeamId ? getTeamSquad(match.awayTeamId) : Promise.resolve([]),
+  ]);
 
   const features: FeatureSnapshot | null = pred ? JSON.parse(pred.featuresSnapshot) : null;
   const factors: KeyFactor[] = pred ? JSON.parse(pred.keyFactors) : [];
@@ -145,6 +151,8 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
               </div>
             </div>
           )}
+
+          <Lineups home={home} away={away} homeSquad={homeSquad} awaySquad={awaySquad} />
         </>
       )}
     </div>

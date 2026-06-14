@@ -1,0 +1,29 @@
+{
+  "_comment": "Confirmed starting line-ups (real match data), merged in addition to squads_sample.json by ml/ingest/squads.py. 'impact' = approximate Elo points lost if the player is unavailable.",
+  "Scotland": [
+    { "name": "Angus Gunn", "position": "GK", "club": "Norwich City", "impact": 9 },
+    { "name": "Aaron Hickey", "position": "DEF", "club": "Brentford", "impact": 9 },
+    { "name": "Jack Hendry", "position": "DEF", "club": "Al-Ettifaq", "impact": 9 },
+    { "name": "Grant Hanley", "position": "DEF", "club": "Norwich City", "impact": 9 },
+    { "name": "Andy Robertson", "position": "DEF", "club": "Liverpool", "impact": 15 },
+    { "name": "Ben Doak", "position": "FWD", "club": "Bournemouth", "impact": 12 },
+    { "name": "Scott McTominay", "position": "MID", "club": "Napoli", "impact": 17 },
+    { "name": "Lewis Ferguson", "position": "MID", "club": "Bologna", "impact": 12 },
+    { "name": "John McGinn", "position": "MID", "club": "Aston Villa", "impact": 14 },
+    { "name": "Lawrence Shankland", "position": "FWD", "club": "Hearts", "impact": 12 },
+    { "name": "Che Adams", "position": "FWD", "club": "Torino", "impact": 12 }
+  ],
+  "Haiti": [
+    { "name": "Johny Placide", "position": "GK", "club": "Free agent", "impact": 9 },
+    { "name": "Arcus Carlens", "position": "DEF", "club": "RWD Molenbeek", "impact": 8 },
+    { "name": "Ricardo Adé", "position": "DEF", "club": "Bari", "impact": 8 },
+    { "name": "Hannes Delcroix", "position": "DEF", "club": "Burnley", "impact": 9 },
+    { "name": "Martin Experience", "position": "DEF", "club": "Cavalier", "impact": 8 },
+    { "name": "Louicius Deedson", "position": "FWD", "club": "Inter Miami", "impact": 10 },
+    { "name": "Danley Jean Jacques", "position": "MID", "club": "Lorient", "impact": 10 },
+    { "name": "Jean-Ricner Bellegarde", "position": "MID", "club": "Wolverhampton", "impact": 14 },
+    { "name": "Ruben Providence", "position": "FWD", "club": "Famalicão", "impact": 11 },
+    { "name": "Frantzdy Pierrot", "position": "FWD", "club": "Kayserispor", "impact": 13 },
+    { "name": "Wilson Isidor", "position": "FWD", "club": "Sunderland", "impact": 12 }
+  ]
+}

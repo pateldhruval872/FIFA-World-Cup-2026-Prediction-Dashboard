@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Ingest squad rosters + player-impact metrics into the database.
 
-Reads a squad JSON ({ teamName: [ {name, position, club, impact}, ... ] }) and
-writes Player, SquadEntry, and PlayerMetric(impact) rows. Re-runnable: clears the
-prior squad/player rows first. After ingesting, re-run ml/predict.py so player
-availability flows into the predictions.
+Loads and MERGES one or more squad JSON files ({ teamName: [ {name, position,
+club, impact}, ... ] }) and writes Player, SquadEntry, and PlayerMetric(impact)
+rows. By default it merges the illustrative sample squads with any confirmed
+starting line-ups, with later files overriding earlier ones per team. Re-runnable:
+clears prior squad/player rows first. After ingesting, re-run ml/predict.py so
+player availability flows into the predictions.
 
 Usage:
-    python3 ml/ingest/squads.py [path/to/squads.json]
-    (defaults to data/seed/squads_sample.json — illustrative sample data)
+    python3 ml/ingest/squads.py [file1.json file2.json ...]
+    (defaults to squads_sample.json + lineups.json)
 """
 import json
 import os
@@ -18,59 +20,51 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEFAULT = os.path.join(ROOT, "data", "seed", "squads_sample.json")
+SEED = os.path.join(ROOT, "data", "seed")
+DEFAULTS = [os.path.join(SEED, "squads_sample.json"), os.path.join(SEED, "lineups.json")]
 
 
-def main(path=DEFAULT):
-    with open(path) as f:
-        data = json.load(f)
-    data.pop("_comment", None)
+def load_merged(paths):
+    merged, sources = {}, []
+    for p in paths:
+        if not os.path.exists(p):
+            continue
+        with open(p) as f:
+            data = json.load(f)
+        data.pop("_comment", None)
+        merged.update(data)  # later files override per team
+        sources.append(os.path.basename(p))
+    return merged, sources
+
+
+def main(paths=None):
+    paths = paths or DEFAULTS
+    data, sources = load_merged(paths)
 
     conn = db.connect()
-    tournament = conn.execute("SELECT id FROM Tournament LIMIT 1").fetchone()
-    if not tournament:
+    tid = db.tournament_id(conn)
+    if not tid:
         sys.exit("No tournament — run the seed first.")
-    tid = tournament["id"]
     team_ids = db.team_id_by_name(conn)
 
-    # clear prior squad data
-    conn.execute("DELETE FROM PlayerMetric")
-    conn.execute("DELETE FROM SquadEntry")
-    conn.execute("DELETE FROM Player")
-
-    players = entries = 0
+    db.clear_squads(conn)
+    players = 0
     for team_name, roster in data.items():
         team_id = team_ids.get(team_name)
         if not team_id:
             print(f"  skip unknown team: {team_name}")
             continue
         for pl in roster:
-            pid = db.gen_id()
-            conn.execute(
-                "INSERT INTO Player (id, name, position, club, nationalTeamId) "
-                "VALUES (?,?,?,?,?)",
-                (pid, pl["name"], pl.get("position"), pl.get("club"), team_id),
-            )
-            conn.execute(
-                "INSERT INTO SquadEntry (id, tournamentId, teamId, playerId, role, "
-                "isAvailable) VALUES (?,?,?,?,?,1)",
-                (db.gen_id(), tid, team_id, pid, pl.get("position")),
-            )
-            conn.execute(
-                "INSERT INTO PlayerMetric (id, playerId, date, metricType, value, source) "
-                "VALUES (?,?,?,?,?,?)",
-                (db.gen_id(), pid, db.now_iso(), "impact", float(pl.get("impact", 0)),
-                 "squads_sample"),
-            )
+            db.insert_squad_player(conn, tid, team_id, pl["name"], pl.get("position"),
+                                   pl.get("club"), pl.get("impact", 0))
             players += 1
-            entries += 1
 
-    db.log_data_source(conn, os.path.basename(path), "success", entries, 0, None)
+    db.log_data_source(conn, "+".join(sources), "success", players, 0, None)
     conn.commit()
     conn.close()
-    print(f"Ingested {players} players across {len(data)} teams. "
-          "Re-run ml/predict.py to apply availability to predictions.")
+    print(f"Ingested {players} players across {len(data)} teams "
+          f"from {', '.join(sources)}. Re-run ml/predict.py to apply.")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else DEFAULT)
+    main(sys.argv[1:] or None)
